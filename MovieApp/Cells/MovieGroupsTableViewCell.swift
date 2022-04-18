@@ -13,8 +13,7 @@ class MovieGroupsTableViewCell: UITableViewCell {
     var mainView : UIView!
     var groupTitle : UILabel!
     var filters : [FilterType] = []
-//    var filterBarView : FilterTabView!
-    var filterBarView : UIView!
+    var filterBarView : FilterTabCollectionView!
     var group : MovieGroupCollectionView!
     
     override init(style: UITableViewCell.CellStyle, reuseIdentifier: String?) {
@@ -32,8 +31,7 @@ class MovieGroupsTableViewCell: UITableViewCell {
         groupTitle.text = groupType.title
         
         filters = groupType.filters
-//        filterBarView.set(filters: filters)
-        
+        filterBarView.set(filters: filters)
         group.setGroupType(group : groupType)
         
     }
@@ -46,18 +44,16 @@ class MovieGroupsTableViewCell: UITableViewCell {
     
     func createViews() {
         mainView = UIView()
-        addSubview(mainView)
+        contentView.addSubview(mainView)
 
         groupTitle = UILabel()
         mainView.addSubview(groupTitle)
         
-//        filterBarView = FilterTabView()
-        filterBarView = UIView()
-        filterBarView.backgroundColor = .systemGray5
-        mainView.addSubview(filterBarView)
+        filterBarView = FilterTabCollectionView()
+        contentView.addSubview(filterBarView)
        
         group = MovieGroupCollectionView()
-        contentView.addSubview(group)
+        mainView.addSubview(group)
         
     }
     

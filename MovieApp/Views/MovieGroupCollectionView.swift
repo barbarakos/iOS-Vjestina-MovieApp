@@ -18,7 +18,6 @@ class MovieGroupCollectionView: UICollectionView, UICollectionViewDelegateFlowLa
     override init(frame: CGRect, collectionViewLayout layout: UICollectionViewLayout) {
         let layout = UICollectionViewFlowLayout()
         layout.scrollDirection = .horizontal
-//        layout.itemSize = CGSize(width: 130, height: 180)
         layout.minimumInteritemSpacing = 10
         super.init(frame: .zero, collectionViewLayout : layout)
         
@@ -58,11 +57,6 @@ class MovieGroupCollectionView: UICollectionView, UICollectionViewDelegateFlowLa
 }
 
 extension MovieGroupCollectionView : UICollectionViewDataSource {
-    
-//    func numberOfSections(in collectionView: UICollectionView) -> Int {
-//        return allMoviesInGroup.count
-//    }
-    
     func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, sizeForItemAt indexPath: IndexPath) -> CGSize {
         return CGSize(width: 130, height: 182)
     }
@@ -73,7 +67,6 @@ extension MovieGroupCollectionView : UICollectionViewDataSource {
         
     func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
         let cell = dequeueReusableCell(withReuseIdentifier: cellId, for: indexPath) as! MovieGroupCollectionViewCell
-//        let movie = allMoviesInGroup[indexPath.row]
         cell.layer.cornerRadius = 15
         cell.set(movie: allMoviesInGroup[indexPath.row])
         return cell
