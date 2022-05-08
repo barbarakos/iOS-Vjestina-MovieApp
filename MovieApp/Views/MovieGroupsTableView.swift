@@ -10,6 +10,8 @@ import MovieAppData
 
 class MovieGroupsTableView: UITableView {
     
+    private var router : AppRouter!
+
     let cellId = "cellId"
     var movieGroups : [GroupType] = []
 
@@ -24,6 +26,11 @@ class MovieGroupsTableView: UITableView {
         fatalError("init(coder:) has not been implemented")
     }
     
+    convenience init(router: AppRouter) {
+        self.init()
+        self.router = router
+    }
+    
     func configureTableView() {
         delegate = self
         dataSource = self
@@ -31,6 +38,7 @@ class MovieGroupsTableView: UITableView {
         rowHeight = 320
         separatorStyle = UITableViewCell.SeparatorStyle.none
     }
+    
 }
 
 extension MovieGroupsTableView : UITableViewDataSource, UITableViewDelegate {
@@ -43,6 +51,8 @@ extension MovieGroupsTableView : UITableViewDataSource, UITableViewDelegate {
             
         let cell = dequeueReusableCell(withIdentifier: cellId) as! MovieGroupsTableViewCell
         let group = movieGroups[indexPath.row]
+
+        cell.setRouter(router : router)
         cell.set(groupType: group)
             
         return cell

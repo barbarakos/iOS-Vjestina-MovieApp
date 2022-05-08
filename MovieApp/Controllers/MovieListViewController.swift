@@ -9,11 +9,17 @@ import UIKit
 import SnapKit
 
 class MovieListViewController: UIViewController, UITextFieldDelegate {
+    
+    private var router: AppRouter!
 
     var searchbar : SearchBarView!
-    var scrollview : UIScrollView!
     var movieList : MovieListTableView!
     var movieGroups : MovieGroupsTableView!
+    
+    convenience init(router: AppRouter) {
+        self.init()
+        self.router = router
+    }
     
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -30,13 +36,15 @@ class MovieListViewController: UIViewController, UITextFieldDelegate {
     func createViews() {
         searchbar = SearchBarView()
         view.addSubview(searchbar)
+        searchbar.backgroundColor = .white
         searchbar.textField.delegate = self
         
-        movieList = MovieListTableView()
+        movieList = MovieListTableView(router : router)
         view.addSubview(movieList)
         movieList.isHidden = true
         
-        movieGroups = MovieGroupsTableView()
+        movieGroups = MovieGroupsTableView(router : router)
+//        movieGroups.setRouter(router: router)
         view.addSubview(movieGroups);
         view.bringSubviewToFront(movieGroups);
     }
