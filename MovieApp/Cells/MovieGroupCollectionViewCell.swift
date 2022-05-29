@@ -10,10 +10,15 @@ import MovieAppData
 
 class MovieGroupCollectionViewCell: UICollectionViewCell {
     
+    let networkService = NetworkService()
+    
     var mainView : UIView!
     var movieImage : UIImageView!
     var circleImage : UIImageView!
     var heartButton : UIButton!
+    
+    var urlString : String!
+    var movie : Movie!
     
     override init(frame: CGRect) {
         super.init(frame: .zero)
@@ -25,9 +30,35 @@ class MovieGroupCollectionViewCell: UICollectionViewCell {
         fatalError("init(coder:) has not been implemented")
     }
     
-    func set(movie : MovieModel) {
-        guard let url = URL(string: movie.imageUrl) else {return}
-        movieImage.image = UIImage(data: try! Data(contentsOf: url))
+    func set(movie : Movie) {
+        let posterString = movie.poster_path
+        urlString = "https://image.tmdb.org/t/p/original" + posterString
+        guard let posterImageURL = URL(string: urlString) else {return}
+        movieImage.image = nil
+        
+        DispatchQueue.global().async {
+            self.networkService.getImageDataFrom(url: posterImageURL) { [weak self] (result) in
+                    switch result {
+                    case .success(let image):
+                        self?.movieImage.image = image
+                    case .failure(let error):
+                        print("Error processing data: \(error)")
+
+                    }
+            }
+        }
+        
+//        DispatchQueue.global().async {
+//            do {
+//                let data = try Data(contentsOf: posterImageURL)
+//                DispatchQueue.main.async {
+//                    self.movieImage.image = UIImage(data: data)
+//                }
+//            } catch {
+//                print("Error with loading poster image: \(error.localizedDescription)")
+//            }
+//        }
+//        movieImage.image = UIImage(data: try! Data(contentsOf: posterImageURL))
     }
     
     func buildViews() {
@@ -37,6 +68,7 @@ class MovieGroupCollectionViewCell: UICollectionViewCell {
     }
     
     func createViews() {
+        
         mainView = UIView()
         addSubview(mainView)
         
@@ -86,5 +118,6 @@ class MovieGroupCollectionViewCell: UICollectionViewCell {
             $0.centerX.centerY.equalToSuperview()
         }
     }
+    
     
 }

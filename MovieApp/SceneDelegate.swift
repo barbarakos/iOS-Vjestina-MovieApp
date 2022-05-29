@@ -16,9 +16,24 @@ class SceneDelegate: UIResponder, UIWindowSceneDelegate {
        
         guard let windowScene = scene as? UIWindowScene else {return}
         window = UIWindow(windowScene: windowScene)
-        let vc = MovieListViewController()
-        window!.rootViewController = vc
-        window?.makeKeyAndVisible()
+        
+        AppRouter(navigationController: UINavigationController()).setStartScreen(in: window)
+        
+//        let movieList = MovieListViewController(router : self)
+//        let navigationController1 = UINavigationController(rootViewController: movieList)
+//        navigationController1.tabBarItem = UITabBarItem(title: "Home", image: UIImage(systemName: "house"), selectedImage: UIImage(systemName: "house.fill"))
+//        let favorites = FavoritesViewController()
+//        let navigationController2 = UINavigationController(rootViewController: favorites)
+//        navigationController2.tabBarItem = UITabBarItem(title: "Favorites", image: UIImage(systemName: "heart"), selectedImage: UIImage(systemName: "heart.fill"))
+//        let tabBarController = UITabBarController()
+//        tabBarController.tabBar.backgroundColor = .white
+//        tabBarController.viewControllers = [navigationController1, navigationController2]
+
+        
+//        _ = AppRouter(navigationController: navigationController1)
+//        _ = AppRouter(navigationController: navigationController2)
+//        window!.rootViewController = tabBarController
+//        window?.makeKeyAndVisible()
     }
 
     func sceneDidDisconnect(_ scene: UIScene) {

@@ -10,6 +10,8 @@ import MovieAppData
 
 class MovieListTableViewCell: UITableViewCell {
     
+    var networkService = NetworkService()
+    
     var mainView : UIView!
     var posterImage : UIImageView!
     var movieTitle : UILabel!
@@ -25,15 +27,28 @@ class MovieListTableViewCell: UITableViewCell {
         fatalError("init(coder:) has not been implemented")
     }
     
-    func set(movie : MovieModel) {
-        guard let url = URL(string: movie.imageUrl) else {return}
-        posterImage.image = UIImage(data: try! Data(contentsOf: url))
+    func set(movie : Movie) {
+        let posterString = movie.poster_path
+        let urlString = "https://image.tmdb.org/t/p/original" + posterString
+        guard let url = URL(string: urlString) else {return}
+        posterImage.image = nil
+        networkService.getImageDataFrom(url: url) { [weak self] (result) in
+                    switch result {
+                    case .success(let image):
+                        self?.posterImage.image = image
+                        self?.reloadInputViews()
+                    case .failure(let error):
+                        print("Error processing data: \(error)")
+                            
+                    }
+        }
+//        posterImage.image = UIImage(data: try! Data(contentsOf: url))
 
         movieTitle.font = UIFont(name: "AvenirNext-Bold", size: 16)
         movieTitle.text = movie.title
 
         movieDescription.font = UIFont(name: "AvenirNext-Regular", size: 14)
-        movieDescription.text = movie.description
+        movieDescription.text = movie.overview
         
     }
     
@@ -103,4 +118,5 @@ class MovieListTableViewCell: UITableViewCell {
             $0.bottom.equalToSuperview().inset(14)
         }
     }
+
 }

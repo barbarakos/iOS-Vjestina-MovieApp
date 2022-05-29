@@ -10,10 +10,11 @@ import MovieAppData
 
 class MovieGroupCollectionView: UICollectionView, UICollectionViewDelegateFlowLayout  {
     
+    private var router : AppRouter!
+    private var viewModel = MovieViewModel()
+    
     var cellId = "cellID"
-    var filters : [FilterType] = []
-    var groupType : MovieGroup!
-    var allMoviesInGroup : [MovieModel] = []
+    var groupType : GroupType!
 
     override init(frame: CGRect, collectionViewLayout layout: UICollectionViewLayout) {
         let layout = UICollectionViewFlowLayout()
@@ -22,6 +23,10 @@ class MovieGroupCollectionView: UICollectionView, UICollectionViewDelegateFlowLa
         super.init(frame: .zero, collectionViewLayout : layout)
         
         configureCollectionView()
+    }
+    
+    func setRouter(router: AppRouter) {
+        self.router = router
     }
     
     required init?(coder: NSCoder) {
@@ -39,18 +44,28 @@ class MovieGroupCollectionView: UICollectionView, UICollectionViewDelegateFlowLa
         self.setContentOffset(CGPoint(x: 0,y: 0), animated: true)
     }
     
-    func setGroupType(group : GroupType) {
-        filters = group.filters
-        groupType = group.toMovieGroup
-        setMoviesInGroup()
+    func loadMoviesData() {
+        viewModel.fetchMoviesData(for: groupType) { [weak self] in
+            DispatchQueue.main.async {
+                self?.reloadData()
+            }
+            
+        }
     }
     
-    func setMoviesInGroup() {
-        for movie in Movies.all() {
-            if (movie.group.contains(groupType)) {
-                allMoviesInGroup.append(movie)
+    func loadGenres() {
+        viewModel.fetchGenresData(for: groupType){ [weak self] in
+            DispatchQueue.main.async {
+                self?.reloadData()
             }
+            
         }
+    }
+    
+    func setGroupType(group : GroupType) {
+        groupType = group
+        loadGenres()
+        loadMoviesData()
     }
     
     
@@ -62,13 +77,23 @@ extension MovieGroupCollectionView : UICollectionViewDataSource {
     }
     
     func collectionView(_ collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
-        return allMoviesInGroup.count
+        return viewModel.numberOfItemsInSection(for: groupType, section: section)
     }
         
     func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
         let cell = dequeueReusableCell(withReuseIdentifier: cellId, for: indexPath) as! MovieGroupCollectionViewCell
         cell.layer.cornerRadius = 15
-        cell.set(movie: allMoviesInGroup[indexPath.row])
+        
+        let movie = self.viewModel.cellForItemAt(for: self.groupType, indexPath: indexPath)
+        cell.set(movie : movie)
         return cell
+        
+        
+    }
+    
+    func collectionView(_ collectionView: UICollectionView, didSelectItemAt indexPath: IndexPath) {
+        let movie = viewModel.cellForItemAt(for: groupType, indexPath: indexPath)
+        router.setMovie(movie : movie)
+        router.showMovieDetailsController()
     }
 }

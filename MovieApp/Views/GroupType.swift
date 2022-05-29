@@ -10,55 +10,35 @@ import MovieAppData
 
 public enum GroupType {
     case popular
-    case freeToWatch
     case trending
     case topRated
-    case upcoming
+    case recommended
     
-    static let allValues = [popular, freeToWatch, trending, topRated, upcoming]
+    static let allValues = [popular, trending, topRated, recommended]
     
     public var title: String {
         switch self {
         case .popular:
             return "What's popular"
-        case .freeToWatch:
-            return "Free to Watch"
         case .trending:
             return "Trending"
         case .topRated:
             return "Top Rated"
-        case .upcoming:
-            return "Upcoming movies"
+        case .recommended:
+            return "Recommended"
         }
     }
     
-    public var toMovieGroup : MovieGroup {
+    public var filters: [String] {
         switch self {
         case .popular:
-            return .popular
-        case .freeToWatch:
-            return .freeToWatch
+            return ["Streaming", "On Tv", "In Theaters"]
         case .trending:
-            return .trending
+            return ["Today", "This week", "This month"]
         case .topRated:
-            return .topRated
-        case .upcoming:
-            return .upcoming
-        }
-    }
-    
-    public var filters: [FilterType] {
-        switch self {
-        case .popular:
-            return [.streaming, .onTv, .inTheaters]
-        case .freeToWatch:
-            return [.drama, .thriller, .horror, .action]
-        case .trending:
-            return [.day, .week, .month]
-        case .topRated:
-            return [.day, .month, .allTime]
-        case .upcoming:
-            return [.drama, .comedy, .sport, .sciFi]
+            return ["Today", "This month", "All time"]
+        case .recommended:
+            return []
         }
     }
 }

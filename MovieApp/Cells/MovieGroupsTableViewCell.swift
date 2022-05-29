@@ -9,36 +9,43 @@ import UIKit
 import MovieAppData
 
 class MovieGroupsTableViewCell: UITableViewCell {
+    
+    private var router : AppRouter!
 
     var mainView : UIView!
     var groupTitle : UILabel!
-    var filters : [FilterType] = []
     var filterBarView : FilterTabCollectionView!
     var group : MovieGroupCollectionView!
+    
+    var groupType : GroupType!
     
     override init(style: UITableViewCell.CellStyle, reuseIdentifier: String?) {
         super.init(style: style, reuseIdentifier: reuseIdentifier)
         
-        buildViews()
+//        buildViews()
     }
+    
     
     required init?(coder: NSCoder) {
         fatalError("init(coder:) has not been implemented")
     }
     
     func set(groupType : GroupType) {
+        self.groupType = groupType
         groupTitle.font = UIFont(name: "AvenirNext-Bold", size: 23)
         groupTitle.text = groupType.title
-        
-        filters = groupType.filters
-        filterBarView.set(filters: filters)
         group.setGroupType(group : groupType)
-        
+        group.allowsMultipleSelection = false
+        filterBarView.setGroupType(group: groupType)
+    }
+    
+    func setRouter(router: AppRouter) {
+        self.router = router
+        buildViews()
     }
     
     func buildViews() {
         createViews()
-        styleViews()
         defineLayoutForViews()
     }
     
@@ -53,11 +60,9 @@ class MovieGroupsTableViewCell: UITableViewCell {
         contentView.addSubview(filterBarView)
        
         group = MovieGroupCollectionView()
-        mainView.addSubview(group)
+        group.setRouter(router: router)
+        contentView.addSubview(group)
         
-    }
-    
-    func styleViews() {
     }
     
     func defineLayoutForViews() {
@@ -72,7 +77,7 @@ class MovieGroupsTableViewCell: UITableViewCell {
         }
         
         filterBarView.snp.makeConstraints {
-            $0.top.equalTo(groupTitle.snp.bottom).offset(10)
+            $0.top.equalTo(groupTitle.snp.bottom).offset(6)
             $0.leading.trailing.equalToSuperview().inset(18)
             $0.bottom.equalTo(filterBarView.snp.top).offset(45)
         }
