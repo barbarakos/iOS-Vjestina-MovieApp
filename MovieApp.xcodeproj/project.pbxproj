@@ -40,7 +40,6 @@
 		E7B52C91284355BE00D6340C /* MovieGenre+CoreDataProperties.swift in Sources */ = {isa = PBXBuildFile; fileRef = E7B52C8B284355BE00D6340C /* MovieGenre+CoreDataProperties.swift */; };
 		E7B52C92284355BE00D6340C /* MovieGroup+CoreDataClass.swift in Sources */ = {isa = PBXBuildFile; fileRef = E7B52C8C284355BE00D6340C /* MovieGroup+CoreDataClass.swift */; };
 		E7B52C93284355BE00D6340C /* MovieGroup+CoreDataProperties.swift in Sources */ = {isa = PBXBuildFile; fileRef = E7B52C8D284355BE00D6340C /* MovieGroup+CoreDataProperties.swift */; };
-		E7B52C962843575F00D6340C /* Kingfisher in Frameworks */ = {isa = PBXBuildFile; productRef = E7B52C952843575F00D6340C /* Kingfisher */; };
 		E7B52C9828437D0E00D6340C /* FavoritesCollectionView.swift in Sources */ = {isa = PBXBuildFile; fileRef = E7B52C9728437D0E00D6340C /* FavoritesCollectionView.swift */; };
 		E7B52C9A28437DF700D6340C /* FavoritesCollectionViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = E7B52C9928437DF700D6340C /* FavoritesCollectionViewCell.swift */; };
 		E7EE7AE328241833000B95E8 /* MovieViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = E7EE7AE228241833000B95E8 /* MovieViewModel.swift */; };
@@ -92,7 +91,6 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				E7B52C962843575F00D6340C /* Kingfisher in Frameworks */,
 				E73C35E427F4B86F00DAB58D /* SnapKit in Frameworks */,
 				E710FDD627F64F650094F1CA /* MovieAppData in Frameworks */,
 			);
@@ -219,7 +217,6 @@
 			packageProductDependencies = (
 				E73C35E327F4B86F00DAB58D /* SnapKit */,
 				E710FDD527F64F650094F1CA /* MovieAppData */,
-				E7B52C952843575F00D6340C /* Kingfisher */,
 			);
 			productName = MovieApp;
 			productReference = E73C35C527F49F6400DAB58D /* MovieApp.app */;
@@ -252,7 +249,6 @@
 			packageReferences = (
 				E73C35E227F4B86F00DAB58D /* XCRemoteSwiftPackageReference "SnapKit" */,
 				E710FDD427F64F650094F1CA /* XCRemoteSwiftPackageReference "MovieAppData" */,
-				E7B52C942843575F00D6340C /* XCRemoteSwiftPackageReference "Kingfisher" */,
 			);
 			productRefGroup = E73C35C627F49F6400DAB58D /* Products */;
 			projectDirPath = "";
@@ -540,14 +536,6 @@
 				minimumVersion = 5.0.0;
 			};
 		};
-		E7B52C942843575F00D6340C /* XCRemoteSwiftPackageReference "Kingfisher" */ = {
-			isa = XCRemoteSwiftPackageReference;
-			repositoryURL = "https://github.com/onevcat/Kingfisher";
-			requirement = {
-				kind = upToNextMajorVersion;
-				minimumVersion = 7.0.0;
-			};
-		};
 /* End XCRemoteSwiftPackageReference section */
 
 /* Begin XCSwiftPackageProductDependency section */
@@ -560,11 +548,6 @@
 			isa = XCSwiftPackageProductDependency;
 			package = E73C35E227F4B86F00DAB58D /* XCRemoteSwiftPackageReference "SnapKit" */;
 			productName = SnapKit;
-		};
-		E7B52C952843575F00D6340C /* Kingfisher */ = {
-			isa = XCSwiftPackageProductDependency;
-			package = E7B52C942843575F00D6340C /* XCRemoteSwiftPackageReference "Kingfisher" */;
-			productName = Kingfisher;
 		};
 /* End XCSwiftPackageProductDependency section */
 
