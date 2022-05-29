@@ -13,36 +13,37 @@ protocol AppRouterProtocol {
 
 class AppRouter : AppRouterProtocol {
 
-    private var navController: UINavigationController!
+    private var navController1: UINavigationController!
+    private var navController2: UINavigationController!
     
     let tabBarController : UITabBarController!
     var movie : Movie!
+    var repository: MoviesRepository!
     
     init(navigationController: UINavigationController) {
-        self.navController = navigationController
         tabBarController = UITabBarController()
         
         
         self.setTabBarAndNavigationControllers()
-        self.editNavigationBarItems(navigationController : navController)
+        self.editNavigationBarItems(navigationController : navController1)
+        self.editNavigationBarItems(navigationController : navController2)
     }
     
     func setTabBarAndNavigationControllers() {
         let movieList = MovieListViewController(router : self)
-        self.navController = UINavigationController(rootViewController: movieList)
-        navController.tabBarItem = UITabBarItem(title: "Home", image: UIImage(systemName: "house"), selectedImage: UIImage(systemName: "house.fill"))
+        self.navController1 = UINavigationController(rootViewController: movieList)
+        navController1.tabBarItem = UITabBarItem(title: "Home", image: UIImage(systemName: "house"), selectedImage: UIImage(systemName: "house.fill"))
         
-        let favorites = FavoritesViewController()
-        let navigationController2 = UINavigationController(rootViewController: favorites)
-        navigationController2.tabBarItem = UITabBarItem(title: "Favorites", image: UIImage(systemName: "heart"), selectedImage: UIImage(systemName: "heart.fill"))
+        let favorites = FavoritesViewController(router : self, repository: movieList.repository)
+        self.navController2 = UINavigationController(rootViewController: favorites)
+        navController2.tabBarItem = UITabBarItem(title: "Favorites", image: UIImage(systemName: "heart"), selectedImage: UIImage(systemName: "heart.fill"))
         
         tabBarController.tabBar.backgroundColor = .white
-        tabBarController.viewControllers = [navController, navigationController2]
+        tabBarController.viewControllers = [navController1, navController2]
     }
     
     func editNavigationBarItems(navigationController : UINavigationController) {
         let navBarAppearance = UINavigationBarAppearance()
-//        navigationController?.navigationBar.prefersLargeTitles = true
         navigationController.navigationBar.isTranslucent = false
         navBarAppearance.backgroundColor = UIColor(red: 11/255, green: 37/255, blue: 63/255, alpha: 1)
         navigationController.navigationBar.standardAppearance = navBarAppearance
@@ -63,13 +64,18 @@ class AppRouter : AppRouterProtocol {
         window?.makeKeyAndVisible()
     }
     
-    func showMovieDetailsController() {
-        let vc = MovieDetailsViewController(router: self);
+    func showMovieDetailsController(num : Int) {
+        let vc = MovieDetailsViewController(router: self, repository: repository);
         vc.setMovie(movie : movie)
-        navController.pushViewController(vc, animated: true)
+        if (num == 1) {
+            navController1.pushViewController(vc, animated: true)
+        } else {
+            navController2.pushViewController(vc, animated: true)
+        }
     }
     
-    func setMovie(movie : Movie) {
+    func setMovieAndRepo(movie : Movie, repository: MoviesRepository) {
         self.movie = movie
+        self.repository = repository
     }
 }

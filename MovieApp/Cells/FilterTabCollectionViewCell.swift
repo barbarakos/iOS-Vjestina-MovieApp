@@ -10,7 +10,7 @@ import UIKit
 class FilterTabCollectionViewCell: UICollectionViewCell {
     
     var filterLabel = UILabel()
-    var filter : Genre!
+    var filter : MovieGenre!
     var attributeStringSel : NSMutableAttributedString!
     var attributeStringUnsel : NSMutableAttributedString!
     
@@ -48,12 +48,12 @@ class FilterTabCollectionViewCell: UICollectionViewCell {
     
     func createViews() {
         attributeStringSel = NSMutableAttributedString(
-            string: filter.name,
+            string: filter.name!,
             attributes: selectedAttributes
         )
         
         attributeStringUnsel = NSMutableAttributedString(
-            string: filter.name,
+            string: filter.name!,
             attributes: unselectedAttributes
         )
         filterLabel.attributedText = attributeStringUnsel
@@ -70,7 +70,7 @@ class FilterTabCollectionViewCell: UICollectionViewCell {
         }
     }
     
-    func setFilter(filter : Genre) {
+    func setFilter(filter : MovieGenre) {
         self.filter = filter
         buildViews()
     }

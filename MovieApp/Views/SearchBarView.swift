@@ -37,6 +37,7 @@ class SearchBarView: UIView {
         self.addSubview(grayView)
         
         textField = UITextField()
+        textField.returnKeyType = .done
         grayView.addSubview(textField)
         
         searchImage = UIImageView(image: UIImage(systemName: "magnifyingglass"))

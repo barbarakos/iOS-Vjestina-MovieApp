@@ -10,55 +10,32 @@ import MovieAppData
 
 class MovieGroupCollectionViewCell: UICollectionViewCell {
     
-    let networkService = NetworkService()
+    private var repository : MoviesRepository!
     
     var mainView : UIView!
-    var movieImage : UIImageView!
+    var movieImage = UIImageView()
     var circleImage : UIImageView!
     var heartButton : UIButton!
     
     var urlString : String!
     var movie : Movie!
     
+    var selectedFav: Bool!
+    
     override init(frame: CGRect) {
         super.init(frame: .zero)
-        
-        buildViews()
     }
     
     required init?(coder: NSCoder) {
         fatalError("init(coder:) has not been implemented")
     }
     
-    func set(movie : Movie) {
-        let posterString = movie.poster_path
-        urlString = "https://image.tmdb.org/t/p/original" + posterString
-        guard let posterImageURL = URL(string: urlString) else {return}
-        movieImage.image = nil
-        
-        DispatchQueue.global().async {
-            self.networkService.getImageDataFrom(url: posterImageURL) { [weak self] (result) in
-                    switch result {
-                    case .success(let image):
-                        self?.movieImage.image = image
-                    case .failure(let error):
-                        print("Error processing data: \(error)")
-
-                    }
-            }
-        }
-        
-//        DispatchQueue.global().async {
-//            do {
-//                let data = try Data(contentsOf: posterImageURL)
-//                DispatchQueue.main.async {
-//                    self.movieImage.image = UIImage(data: data)
-//                }
-//            } catch {
-//                print("Error with loading poster image: \(error.localizedDescription)")
-//            }
-//        }
-//        movieImage.image = UIImage(data: try! Data(contentsOf: posterImageURL))
+    func setMovieAndRepo(movie : Movie, repository: MoviesRepository) {
+        self.movie = movie
+        movieImage.image = UIImage(data: movie.poster_path!)
+        self.repository = repository
+        selectedFav = movie.favorite
+        buildViews()
     }
     
     func buildViews() {
@@ -72,19 +49,38 @@ class MovieGroupCollectionViewCell: UICollectionViewCell {
         mainView = UIView()
         addSubview(mainView)
         
-        movieImage = UIImageView()
         mainView.addSubview(movieImage)
         
         let circle = UIImage(systemName: "circle.fill")
         circleImage = UIImageView(image: circle)
         circleImage.tintColor = .black
         circleImage.layer.opacity = 0.5
-        movieImage.addSubview(circleImage)
+        mainView.addSubview(circleImage)
+        mainView.bringSubviewToFront(circleImage)
+        circleImage.isUserInteractionEnabled = true
         
         heartButton = UIButton()
-        heartButton.setBackgroundImage(UIImage(systemName: "heart"), for: .normal)
+        heartButton.isUserInteractionEnabled = true
+        if (selectedFav) {
+            heartButton.setBackgroundImage(UIImage(systemName: "heart.fill"), for: .normal)
+        } else {
+            heartButton.setBackgroundImage(UIImage(systemName: "heart"), for: .normal)
+        }
         heartButton.tintColor = .white
+        heartButton.addTarget(self, action: #selector(heartTapped), for: .touchUpInside)
         circleImage.addSubview(heartButton)
+        contentView.bringSubviewToFront(heartButton)
+    }
+    
+    @objc func heartTapped() {
+        if(selectedFav) {
+            heartButton.setBackgroundImage(UIImage(systemName: "heart"), for: .normal)
+            selectedFav = false
+        } else {
+            heartButton.setBackgroundImage(UIImage(systemName: "heart.fill"), for: .normal)
+            selectedFav = true
+        }
+        repository.changeFavoriteValue(movie: movie)
     }
     
     func styleViews() {

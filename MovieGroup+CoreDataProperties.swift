@@ -17,7 +17,7 @@ extension MovieGroup {
     }
 
     @NSManaged public var name: String?
-    @NSManaged public var movies: NSOrderedSet?
+    @NSManaged public var movies: [Movie]?
 
 }
 

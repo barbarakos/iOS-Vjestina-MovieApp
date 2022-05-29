@@ -12,10 +12,13 @@ import SnapKit
 class FilterTabCollectionView: UICollectionView {
 
     private var viewModel = MovieViewModel()
+    private var repository : MoviesRepository!
     var cellId = "cellID"
     
-    var groupType : GroupType!
+    
+    var genres = [MovieGenre]()
     var lastIndexActive:IndexPath!
+    @objc dynamic var currentGenre: MovieGenre!
     
     override init(frame: CGRect, collectionViewLayout layout: UICollectionViewLayout) {
         let layout = UICollectionViewFlowLayout()
@@ -26,6 +29,10 @@ class FilterTabCollectionView: UICollectionView {
         
         configure()
         
+    }
+    convenience init(repository: MoviesRepository) {
+        self.init()
+        self.repository = repository
     }
     
     required init?(coder: NSCoder) {
@@ -41,17 +48,11 @@ class FilterTabCollectionView: UICollectionView {
         dataSource = self
     }
     
-    func setGroupType(group : GroupType) {
-        groupType = group
-        loadGenres()
-    }
-    
     func loadGenres() {
-        viewModel.fetchGenresData(for: groupType){ [weak self] in
-            DispatchQueue.main.async {
-                self?.delegate = self
-                self?.reloadData()
-            }
+        repository.update()
+        DispatchQueue.main.async {
+            self.genres = self.repository.database.genres
+            self.reloadData()
         }
         
     }
@@ -61,15 +62,16 @@ class FilterTabCollectionView: UICollectionView {
 extension FilterTabCollectionView : UICollectionViewDataSource, UICollectionViewDelegate {
     
     func collectionView(_ collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
-        return viewModel.numberOfGenreItemsInSection(section: section)
+        return genres.count
     }
 
     func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
         let cell = dequeueReusableCell(withReuseIdentifier: cellId, for: indexPath) as! FilterTabCollectionViewCell
-        let filter = viewModel.cellForGenreItemAt(indexPath: indexPath)
+        let filter = genres[indexPath.row]
         cell.setFilter(filter: filter)
         if (indexPath.row == 0 && lastIndexActive == nil) {
             cell.select(select : true)
+            currentGenre = genres[indexPath.row]
             self.lastIndexActive = indexPath
         }
         cell.select(select : (indexPath == lastIndexActive))
@@ -90,6 +92,7 @@ extension FilterTabCollectionView : UICollectionViewDataSource, UICollectionView
         let cell = collectionView.cellForItem(at: indexPath) as! FilterTabCollectionViewCell
         cell.select(select: true)
         lastIndexActive = indexPath
+        currentGenre = genres[indexPath.row]
     }
 }
 

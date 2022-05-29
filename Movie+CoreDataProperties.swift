@@ -24,8 +24,8 @@ extension Movie {
     @NSManaged public var release_date: String?
     @NSManaged public var title: String?
     @NSManaged public var vote_average: Float
-    @NSManaged public var genres: NSOrderedSet?
-    @NSManaged public var groups: NSOrderedSet?
+    @NSManaged public var genres: [MovieGenre]?
+    @NSManaged public var groups: [MovieGroup]?
 
 }
 

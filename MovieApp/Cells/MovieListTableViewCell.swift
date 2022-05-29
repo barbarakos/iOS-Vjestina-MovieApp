@@ -10,7 +10,7 @@ import MovieAppData
 
 class MovieListTableViewCell: UITableViewCell {
     
-    var networkService = NetworkService()
+    var repository = MoviesRepository()
     
     var mainView : UIView!
     var posterImage : UIImageView!
@@ -28,21 +28,7 @@ class MovieListTableViewCell: UITableViewCell {
     }
     
     func set(movie : Movie) {
-        let posterString = movie.poster_path
-        let urlString = "https://image.tmdb.org/t/p/original" + posterString
-        guard let url = URL(string: urlString) else {return}
-        posterImage.image = nil
-        networkService.getImageDataFrom(url: url) { [weak self] (result) in
-                    switch result {
-                    case .success(let image):
-                        self?.posterImage.image = image
-                        self?.reloadInputViews()
-                    case .failure(let error):
-                        print("Error processing data: \(error)")
-                            
-                    }
-        }
-//        posterImage.image = UIImage(data: try! Data(contentsOf: url))
+        posterImage.image = UIImage(data: movie.poster_path!)
 
         movieTitle.font = UIFont(name: "AvenirNext-Bold", size: 16)
         movieTitle.text = movie.title

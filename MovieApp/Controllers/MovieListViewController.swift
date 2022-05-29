@@ -16,14 +16,27 @@ class MovieListViewController: UIViewController, UITextFieldDelegate {
     var movieList : MovieListTableView!
     var movieGroups : MovieGroupsTableView!
     
+    var repository : MoviesRepository!
+    
     convenience init(router: AppRouter) {
         self.init()
         self.router = router
+        
+        repository = MoviesRepository()
+        DispatchQueue.global().sync {
+            self.repository.fetchAndSaveAllMovies()
+            self.repository.fetchAndSaveAllGenres()
+        }
     }
+    
+//    override func viewWillAppear(_ animated: Bool) {
+//        movieGroups.reloadData()
+//    }
     
     override func viewDidLoad() {
         super.viewDidLoad()
         view.backgroundColor = .white
+        
         
         buildViews()
     }
@@ -39,11 +52,11 @@ class MovieListViewController: UIViewController, UITextFieldDelegate {
         searchbar.backgroundColor = .white
         searchbar.textField.delegate = self
         
-        movieList = MovieListTableView(router : router)
+        movieList = MovieListTableView(router: router, repository: repository)
         view.addSubview(movieList)
         movieList.isHidden = true
         
-        movieGroups = MovieGroupsTableView(router : router)
+        movieGroups = MovieGroupsTableView(router: router, repository: repository)
 //        movieGroups.setRouter(router: router)
         view.addSubview(movieGroups);
         view.bringSubviewToFront(movieGroups);
@@ -66,6 +79,10 @@ class MovieListViewController: UIViewController, UITextFieldDelegate {
             $0.top.equalTo(searchbar.snp.bottom).offset(10)
         }
         
+    }
+    
+    func textFieldDidChangeSelection(_ textField: UITextField) {
+        movieList.setSearchedText(searchedText: searchbar.textField.text!)
     }
     
     func textFieldDidBeginEditing(_ textField: UITextField) {

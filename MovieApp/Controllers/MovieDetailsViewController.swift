@@ -11,9 +11,9 @@ import SnapKit
 class MovieDetailsViewController: UIViewController {
     
     private var router : AppRouter!
-    private var networkService = NetworkService()
+    private var repository : MoviesRepository!
     private var viewModel = MovieViewModel()
-    var detmovie : MovieDetail!
+    var detmovie : Movie!
     
     var scrollView : UIScrollView!
     var contentView : UIView!
@@ -43,31 +43,15 @@ class MovieDetailsViewController: UIViewController {
 //        router.editNavigationBarItems(navigationController: self.navigationController!)
     }
     
-    convenience init(router: AppRouter) {
+    convenience init(router: AppRouter, repository: MoviesRepository) {
         self.init()
         self.router = router
-        
+        self.repository = repository
     }
     
     func setMovie(movie : Movie) {
-        loadMovie(movie: movie) {
-            DispatchQueue.main.async {[weak self] in
-                self?.buildViews()
-            }
-        }
-    }
-    
-    func loadMovie(movie : Movie, completionHandler: @escaping () -> ()) {
-        networkService.getDetailedMovie(urlstring: "/movie/\(movie.id)?language=en-US&page=1&api_key=6485b76b569ed96963a3f0e786cd369c"){ [weak self] (result) in
-    
-            switch result {
-            case .success(let value):
-                self?.detmovie = value
-                completionHandler()
-            case .failure(let error):
-                print("Error processing data: \(error)")
-            }
-        }
+        detmovie = movie
+        buildViews()
     }
     
     func buildViews() {
@@ -127,20 +111,7 @@ class MovieDetailsViewController: UIViewController {
     
     func styleViews() {
         //image
-        let posterString = detmovie.poster_path
-        let urlString = "https://image.tmdb.org/t/p/original" + posterString
-        guard let url = URL(string: urlString) else {return}
-        posterImage.image = nil
-        networkService.getImageDataFrom(url: url) { [weak self] (result) in
-                    switch result {
-                    case .success(let image):
-                        self?.posterImage.image = image
-                        self?.reloadInputViews()
-                    case .failure(let error):
-                        print("Error processing data: \(error)")
-                            
-                    }
-        }
+        posterImage.image = UIImage(data: detmovie.poster_path!)
         posterImage.frame = headerView.frame
         posterImage.contentMode = .scaleAspectFill
         posterImage.clipsToBounds = true
@@ -183,15 +154,15 @@ class MovieDetailsViewController: UIViewController {
         let paragraphStyle = NSMutableParagraphStyle()
         var genresString = ""
         let genres = detmovie.genres
-        genresString = genres[0].name
-        for index in genres.indices {
+        genresString = genres![0].name!
+        for index in genres!.indices {
             if index != 0 {
-             genresString = genresString + ", \(genres[index].name)"
+                genresString = genresString + ", \(genres![index].name!)"
             }
         }
-        let movieDurationHours : Int = (detmovie.runtime / 60)
-        let movieDurationMins = detmovie.runtime - (movieDurationHours*60)
-        genresLabel.attributedText = NSMutableAttributedString(string: genresString + "  \(movieDurationHours)h" + " \(movieDurationMins)min",
+//        let movieDurationHours : Int = (detmovie.runtime / 60)
+//        let movieDurationMins = detmovie.runtime - (movieDurationHours*60)
+        genresLabel.attributedText = NSMutableAttributedString(string: genresString,
             attributes: [NSAttributedString.Key.paragraphStyle: paragraphStyle])
         
         //release date
@@ -205,11 +176,9 @@ class MovieDetailsViewController: UIViewController {
         titleLabel.textColor = UIColor(red: 0.951, green: 0.951, blue: 0.951, alpha: 1)
         titleLabel.font = UIFont(name: "AvenirNext-Bold", size: 29)
         titleLabel.numberOfLines = 0
-//        title.lineBreakMode = .byWordWrapping
-//        title.preferredMaxLayoutWidth = 150
         paragraphStyle.lineHeightMultiple = 1.2
-        let dateArr = detmovie.release_date.components(separatedBy: "-")
-        titleLabel.attributedText = NSMutableAttributedString(string: detmovie.title + "  (\(dateArr[0]))",
+        let dateArr = detmovie.release_date!.components(separatedBy: "-")
+        titleLabel.attributedText = NSMutableAttributedString(string: detmovie.title! + "  (\(dateArr[0]))",
                                 attributes: [NSAttributedString.Key.paragraphStyle: paragraphStyle])
             
         //userscore label
@@ -236,7 +205,7 @@ class MovieDetailsViewController: UIViewController {
         descriptionLabel.numberOfLines = 0
         descriptionLabel.lineBreakMode = .byWordWrapping
         paragraphStyle.lineHeightMultiple = 1.15
-        descriptionLabel.attributedText = NSMutableAttributedString(string: detmovie.overview, attributes: [NSAttributedString.Key.paragraphStyle: paragraphStyle])
+        descriptionLabel.attributedText = NSMutableAttributedString(string: detmovie.overview!, attributes: [NSAttributedString.Key.paragraphStyle: paragraphStyle])
         
         //percentage
         let ratePercentage = Int(detmovie.vote_average * 10)
@@ -272,17 +241,15 @@ class MovieDetailsViewController: UIViewController {
             $0.top.equalTo(genresLabel.snp.top).offset(-25)
         }
         
-//        title.sizeToFit()
-//        title.layoutIfNeeded()
         titleLabel.snp.makeConstraints {
             $0.leading.equalToSuperview().offset(20)
             $0.trailing.equalToSuperview().offset(-20)
             $0.bottom.equalTo(dateLabel.snp.top).offset(-10)
-//            $0.top.equalTo(title.snp.bottom).offset(-title.frame.height)
+            $0.top.equalTo(userScore.snp.bottom).offset(10)
         }
         
         userScore.snp.makeConstraints {
-            $0.top.equalToSuperview().offset(60)
+            $0.top.greaterThanOrEqualToSuperview().offset(24)
             $0.left.equalToSuperview().offset(72)
         }
         
@@ -300,7 +267,7 @@ class MovieDetailsViewController: UIViewController {
         
         percentage.snp.makeConstraints {
             $0.left.equalToSuperview().offset(23)
-            $0.top.equalToSuperview().offset(60)
+            $0.top.equalTo(userScore.snp.top)
 
         }
     }

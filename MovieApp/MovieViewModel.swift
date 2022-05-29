@@ -11,15 +11,15 @@ class MovieViewModel {
 
     private var networkService = NetworkService()
     
-    private var genres = [Genre]()
+    private var genres = [GenreModel]()
     
-    private var allMovies = [Movie]()
-    private var popularMovies = [Movie]()
-    private var trendingMovies = [Movie]()
-    private var topRatedMovies = [Movie]()
-    private var recommendedMovies = [Movie]()
+    private var allMovies = [MovieModel]()
+    private var popularMovies = [MovieModel]()
+    private var trendingMovies = [MovieModel]()
+    private var topRatedMovies = [MovieModel]()
+    private var recommendedMovies = [MovieModel]()
     
-    var detailedMovie : MovieDetail!
+//    var detailedMovie : MovieDetail!
     
     func fetchMoviesData(for groupType: GroupType, completionHandler: @escaping () -> ()) {
         var endURL = ""
@@ -82,7 +82,7 @@ class MovieViewModel {
         }
     }
     
-    func cellForItemAt(for groupType: GroupType, indexPath : IndexPath) -> Movie {
+    func cellForItemAt(for groupType: GroupType, indexPath : IndexPath) -> MovieModel {
         switch groupType {
         case .popular:
             return popularMovies[indexPath.row]
@@ -97,9 +97,6 @@ class MovieViewModel {
     
     func fetchGenresData(for groupType: GroupType, completionHandler: @escaping () -> ()) {
         genres.removeAll()
-        for filterName in groupType.filters {
-            genres.append(Genre(id: 1, name: filterName))
-        }
         networkService.executeGenresUrlRequest { [weak self] (result) in
             switch result {
             case .success(let listOf):
@@ -118,7 +115,7 @@ class MovieViewModel {
         return genres.count
     }
     
-    func cellForGenreItemAt(indexPath : IndexPath) -> Genre {
+    func cellForGenreItemAt(indexPath : IndexPath) -> GenreModel {
         return genres[indexPath.row]
     }
     
@@ -150,24 +147,24 @@ class MovieViewModel {
         return allMovies.count
     }
     
-    func cellForAllMoviesItemAt(indexPath : IndexPath) -> Movie {
+    func cellForAllMoviesItemAt(indexPath : IndexPath) -> MovieModel {
         return allMovies[indexPath.row]
     }
     
-    func fetchDetailedMovie(for movie : Movie, completionHandler: @escaping () -> ()) {
-        networkService.getDetailedMovie(urlstring: "/movie/\(movie.id)?language=en-US&page=1&api_key=6485b76b569ed96963a3f0e786cd369c"){ [weak self] (result) in
-        
-            switch result {
-            case .success(let value):
-                self?.detailedMovie = value
-                completionHandler()
-                
-            case .failure(let error):
-                print("Error processing data: \(error)")
-                
-            }
-        }
-    }
+//    func fetchDetailedMovie(for movie : MovieModel, completionHandler: @escaping () -> ()) {
+//        networkService.getDetailedMovie(urlstring: "/movie/\(movie.id)?language=en-US&page=1&api_key=6485b76b569ed96963a3f0e786cd369c"){ [weak self] (result) in
+//
+//            switch result {
+//            case .success(let value):
+//                self?.detailedMovie = value
+//                completionHandler()
+//
+//            case .failure(let error):
+//                print("Error processing data: \(error)")
+//
+//            }
+//        }
+//    }
     
     
 }

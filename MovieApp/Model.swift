@@ -7,7 +7,7 @@
 
 import Foundation
 
-struct Movie : Codable, Hashable {
+struct MovieModel : Codable, Hashable {
     
     let genre_ids : [Int]
     let id : Int
@@ -19,10 +19,10 @@ struct Movie : Codable, Hashable {
     
 }
 
-struct MovieDetail : Codable {
+struct MovieDetailModel : Codable {
     
     
-    let genres : [Genre]
+    let genres : [GenreModel]
     let id : Int
     let overview : String
     let poster_path : String
@@ -34,18 +34,18 @@ struct MovieDetail : Codable {
 }
 
 struct MoviesData : Codable {
-    let movies : [Movie]
+    let movies : [MovieModel]
     
     private enum CodingKeys : String, CodingKey {
         case movies = "results"
     }
 }
 
-struct Genre : Codable {
+struct GenreModel : Codable {
     let id : Int
     let name : String
 }
 
 struct GenresData : Codable {
-    let genres : [Genre]
+    let genres : [GenreModel]
 }
