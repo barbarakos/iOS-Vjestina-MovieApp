@@ -1,15 +1,14 @@
 //
-//  MovieGroupCollectionViewCell.swift
+//  FavoritesCollectionViewCell.swift
 //  MovieApp
 //
-//  Created by Barbara Kos on 11.04.2022..
+//  Created by Barbara Kos on 29.05.2022..
 //
 
 import UIKit
-import MovieAppData
 
-class MovieGroupCollectionViewCell: UICollectionViewCell {
-    
+class FavoritesCollectionViewCell: UICollectionViewCell {
+    let cellId : String = "FavoritesCollectionViewCell"
     private var repository : MoviesRepository!
     
     var mainView : UIView!
@@ -97,7 +96,8 @@ class MovieGroupCollectionViewCell: UICollectionViewCell {
     
     func defineLayoutForViews() {
         mainView.snp.makeConstraints {
-            $0.leading.trailing.top.bottom.equalToSuperview()
+            $0.top.equalToSuperview().inset(15)
+            $0.leading.trailing.bottom.equalToSuperview()
         }
         
         movieImage.snp.makeConstraints {

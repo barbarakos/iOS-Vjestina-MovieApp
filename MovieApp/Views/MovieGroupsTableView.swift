@@ -11,14 +11,15 @@ import MovieAppData
 class MovieGroupsTableView: UITableView {
     
     private var router : AppRouter!
+    private var repository : MoviesRepository!
+    
 
     let cellId = "cellId"
-    var movieGroups : [GroupType] = []
+    var movieGroups : [MovieGroup] = []
 
     override init(frame: CGRect, style: UITableView.Style) {
         super.init(frame: frame, style: style)
         
-        movieGroups = GroupType.allValues
         configureTableView()
     }
     
@@ -26,18 +27,24 @@ class MovieGroupsTableView: UITableView {
         fatalError("init(coder:) has not been implemented")
     }
     
-    convenience init(router: AppRouter) {
+    convenience init(router: AppRouter, repository: MoviesRepository) {
         self.init()
         self.router = router
+        self.repository = repository
     }
     
     func configureTableView() {
+        DispatchQueue.main.async {
+            self.movieGroups = self.repository.database.groups
+            self.reloadData()
+        }
         delegate = self
         dataSource = self
         register(MovieGroupsTableViewCell.self, forCellReuseIdentifier: cellId)
         rowHeight = 320
         separatorStyle = UITableViewCell.SeparatorStyle.none
     }
+    
     
 }
 
@@ -51,9 +58,8 @@ extension MovieGroupsTableView : UITableViewDataSource, UITableViewDelegate {
             
         let cell = dequeueReusableCell(withIdentifier: cellId) as! MovieGroupsTableViewCell
         let group = movieGroups[indexPath.row]
-
-        cell.setRouter(router : router)
-        cell.set(groupType: group)
+        cell.setRouterAndRepo(router : router, repository: repository)
+        cell.set(movieGroup: group)
             
         return cell
     }

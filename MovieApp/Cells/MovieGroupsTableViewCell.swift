@@ -11,42 +11,53 @@ import MovieAppData
 class MovieGroupsTableViewCell: UITableViewCell {
     
     private var router : AppRouter!
+    private var repository: MoviesRepository!
+    let cellId = "cellId"
 
     var mainView : UIView!
     var groupTitle : UILabel!
     var filterBarView : FilterTabCollectionView!
     var group : MovieGroupCollectionView!
     
-    var groupType : GroupType!
+    
+    private var token: NSKeyValueObservation!
+    
+    var moviegroup : MovieGroup!
     
     override init(style: UITableViewCell.CellStyle, reuseIdentifier: String?) {
         super.init(style: style, reuseIdentifier: reuseIdentifier)
         
-//        buildViews()
     }
-    
-    
+
     required init?(coder: NSCoder) {
         fatalError("init(coder:) has not been implemented")
     }
     
-    func set(groupType : GroupType) {
-        self.groupType = groupType
+    func set(movieGroup : MovieGroup) {
         groupTitle.font = UIFont(name: "AvenirNext-Bold", size: 23)
-        groupTitle.text = groupType.title
-        group.setGroupType(group : groupType)
+        groupTitle.text = movieGroup.name
+        group.setMovieGroup(group: movieGroup)
         group.allowsMultipleSelection = false
-        filterBarView.setGroupType(group: groupType)
+        filterBarView.loadGenres()
     }
     
-    func setRouter(router: AppRouter) {
+    func setRouterAndRepo(router: AppRouter, repository: MoviesRepository) {
         self.router = router
+        self.repository = repository
         buildViews()
     }
     
     func buildViews() {
         createViews()
+        configure()
         defineLayoutForViews()
+    }
+    
+    func configure() {
+        token = filterBarView.observe(\.currentGenre, changeHandler: { (filterBarView, change) in
+            print("Current genre is now set: \(filterBarView.currentGenre.name!)")
+            self.group.setSelectedGenre(genre: filterBarView.currentGenre)
+        })
     }
     
     func createViews() {
@@ -56,11 +67,10 @@ class MovieGroupsTableViewCell: UITableViewCell {
         groupTitle = UILabel()
         mainView.addSubview(groupTitle)
         
-        filterBarView = FilterTabCollectionView()
+        filterBarView = FilterTabCollectionView(repository: repository)
         contentView.addSubview(filterBarView)
        
-        group = MovieGroupCollectionView()
-        group.setRouter(router: router)
+        group = MovieGroupCollectionView(router: router, repository: repository)
         contentView.addSubview(group)
         
     }
