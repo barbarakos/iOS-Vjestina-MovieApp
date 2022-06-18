@@ -69,7 +69,6 @@ class MovieGroupCollectionViewCell: UICollectionViewCell {
         heartButton.tintColor = .white
         heartButton.addTarget(self, action: #selector(heartTapped), for: .touchUpInside)
         circleImage.addSubview(heartButton)
-        contentView.bringSubviewToFront(heartButton)
     }
     
     @objc func heartTapped() {
