@@ -60,7 +60,7 @@ class FavoritesCollectionView: UICollectionView, UICollectionViewDelegateFlowLay
 
 extension FavoritesCollectionView : UICollectionViewDataSource {
     func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, sizeForItemAt indexPath: IndexPath) -> CGSize {
-        return CGSize(width: 117, height: 173)
+        return CGSize(width: (UIScreen.main.bounds.size.width/3) - 20, height: 192)
     }
     
     func collectionView(_ collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {

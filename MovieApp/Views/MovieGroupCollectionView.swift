@@ -25,6 +25,7 @@ class MovieGroupCollectionView: UICollectionView, UICollectionViewDelegateFlowLa
         layout.minimumInteritemSpacing = 10
         super.init(frame: .zero, collectionViewLayout : layout)
         
+        isHidden = true
         self.configureCollectionView()
     }
 
@@ -55,6 +56,7 @@ class MovieGroupCollectionView: UICollectionView, UICollectionViewDelegateFlowLa
         self.moviesInGroup = movieGroup.movies!.filter { $0.genre_ids!.contains(Int(genreFilter.id)) }
         DispatchQueue.main.async {
             self.reloadData()
+            self.isHidden = false
         }
     }
     
