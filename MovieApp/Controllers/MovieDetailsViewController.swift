@@ -33,14 +33,13 @@ class MovieDetailsViewController: UIViewController {
     override func viewDidLoad() {
         super.viewDidLoad()
         view.backgroundColor = .white
+        
         navigationItem.backBarButtonItem = UIBarButtonItem(image: UIImage(systemName: "chevron.backward"))
         let tmdb = UIImageView()
         let image = UIImage (named: "tmdb.jpg")
         tmdb.image = image
         tmdb.contentMode = .scaleAspectFit
         navigationItem.titleView = tmdb
-        
-//        router.editNavigationBarItems(navigationController: self.navigationController!)
     }
     
     convenience init(router: AppRouter, repository: MoviesRepository) {
@@ -52,6 +51,40 @@ class MovieDetailsViewController: UIViewController {
     func setMovie(movie : Movie) {
         detmovie = movie
         buildViews()
+    }
+    
+    override func viewWillAppear(_ animated: Bool) {
+        super.viewWillAppear(animated)
+        // inicijalna transformacija izvan ekrana
+        titleLabel.transform = titleLabel.transform.translatedBy(x: view.frame.width, y: 0)
+        dateLabel.transform = dateLabel.transform.translatedBy(x: view.frame.width, y: 0)
+        genresLabel.transform = genresLabel.transform.translatedBy(x: view.frame.width, y: 0)
+    }
+    override func viewDidAppear(_ animated: Bool) {
+        super.viewDidAppear(animated)
+        UIView.animate(
+            withDuration: 1,
+            animations: {
+                self.titleLabel.transform = .identity
+            }
+        )
+        
+        UIView.animate(
+            withDuration: 1,
+            delay: 0.5,
+            animations: {
+                self.dateLabel.transform = .identity
+            }
+        )
+        
+        UIView.animate(
+            withDuration: 1,
+            delay: 0.75,
+            options: [.curveEaseIn, .curveEaseOut],
+            animations: {
+                self.genresLabel.transform = .identity
+            }
+        )
     }
     
     func buildViews() {

@@ -25,7 +25,7 @@ class MoviesNetworkDataSource: NetworkService { // dohvat filmova s mreze
             case .success(let listOf):
                 self?.allMovies.append(contentsOf: listOf.movies)
                 self?.popularMovies.append(contentsOf: listOf.movies)
-                completionHandler()
+//                completionHandler()
                 
             case .failure(let error):
                 print("Error processing data: \(error)")
@@ -39,7 +39,7 @@ class MoviesNetworkDataSource: NetworkService { // dohvat filmova s mreze
             case .success(let listOf):
                 self?.allMovies.append(contentsOf: listOf.movies)
                 self?.trendingMovies.append(contentsOf: listOf.movies)
-                completionHandler()
+//                completionHandler()
                 
             case .failure(let error):
                 print("Error processing data: \(error)")
@@ -66,7 +66,7 @@ class MoviesNetworkDataSource: NetworkService { // dohvat filmova s mreze
             case .success(let listOf):
                 self?.allMovies.append(contentsOf: listOf.movies)
                 self?.topRatedMovies.append(contentsOf: listOf.movies)
-                completionHandler()
+//                completionHandler()
                 
             case .failure(let error):
                 print("Error processing data: \(error)")

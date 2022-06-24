@@ -91,7 +91,7 @@ class FavoritesViewController: UIViewController {
         
         favoritesCollectionView.snp.makeConstraints {
             $0.top.equalTo(titleLabel.snp.bottom).offset(25)
-            $0.leading.trailing.equalToSuperview().inset(18)
+            $0.leading.trailing.equalToSuperview().inset(12)
             $0.bottom.equalToSuperview()
         }
     }
